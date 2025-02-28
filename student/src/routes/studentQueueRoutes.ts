@@ -2,12 +2,12 @@
 import express from "express"
 import { authMiddleware } from "../middleware"
 
-import StudentController from "../controllers/studentController";
+import StudentQueueController from "../controllers/studentQueueController";
 
 
 const router: express.Router = express.Router()
 
-const controller = new StudentController();
+const controller = new StudentQueueController();
 
 router.route('')
     .post(authMiddleware, controller.create)

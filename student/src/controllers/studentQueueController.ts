@@ -1,17 +1,17 @@
-import { ILike } from "typeorm"
+import { ILike, Raw } from "typeorm"
 
 import dataSource from '../config/data-source';
-import { Student } from "../models/student.entity";
+import { StudentQueue } from "../models/student-queue.entity";
 
 
-class StudentController {
-    private studentRepository = dataSource.getRepository(Student)
+class StudentQueueController {
+    private studentQueueRepository = dataSource.getRepository(StudentQueue)
 
     create = async (request: any, response: any) => {
         const { body } = request
 
-        const instance = this.studentRepository.create(body)
-        const result = await this.studentRepository.save(instance)
+        const instance = this.studentQueueRepository.create(body)
+        const result = await this.studentQueueRepository.save(instance)
 
         return response.send(result)
     }
@@ -20,13 +20,13 @@ class StudentController {
         const { params, body } = request;
         const { id } = params;
 
-        const instance = await this.studentRepository.findOneBy({ id });
+        const instance = await this.studentQueueRepository.findOneBy({ id });
 
         for (const key in body) {
             instance[key] = body[key];
         }
 
-        const result = await this.studentRepository.save(instance);
+        const result = await this.studentQueueRepository.save(instance);
 
         return response.send(result);
     }
@@ -35,8 +35,8 @@ class StudentController {
         const { params } = request;
         const { id } = params;
 
-        const instance = await this.studentRepository.findOneBy({ id });
-        await this.studentRepository.remove(instance);
+        const instance = await this.studentQueueRepository.findOneBy({ id });
+        await this.studentQueueRepository.remove(instance);
 
         return response.status(204).send({});
     }
@@ -45,7 +45,7 @@ class StudentController {
         const { params } = request;
         const { id } = params;
 
-        const result = await this.studentRepository.findOneBy({ id });
+        const result = await this.studentQueueRepository.findOneBy({ id });
 
         return response.send(result);
     }
@@ -55,11 +55,11 @@ class StudentController {
 
         const findOptions: any = {}
 
-        if (query.group) {
-            findOptions.group = ILike(`%${query.group}%`)
+        if (query.task) {
+            findOptions.task = ILike(`%${query.task}%`)
         }
 
-        const result = await this.studentRepository.find({
+        const result = await this.studentQueueRepository.find({
             where: findOptions
         })
 
@@ -67,4 +67,4 @@ class StudentController {
     }
 }
 
-export default StudentController;
+export default StudentQueueController;
