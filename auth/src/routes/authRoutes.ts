@@ -1,5 +1,6 @@
 import express from "express"
 import AuthController from "../controllers/authController"
+import { authMiddleware } from "../middleware"
 
 
 const router: express.Router = express.Router()
@@ -13,9 +14,9 @@ router.route('/login')
     .post(controller.auth)
 
 router.route('/verify')
-    .post(controller.verify)
+    .post(authMiddleware, controller.verify)
 
 router.route('/me')
-    .get(controller.me)
+    .get(authMiddleware, controller.me)
 
 export default router

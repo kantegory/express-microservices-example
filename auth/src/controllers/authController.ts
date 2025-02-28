@@ -7,6 +7,9 @@ import settings from '../config/config';
 
 import { User } from '../models/user.entity';
 
+import checkPassword from '../utils/checkPassword';
+
+
 // Контроллер
 class AuthController {
     // TODO: дописать сервис
@@ -31,9 +34,15 @@ class AuthController {
 
         const user = await userRepository.findOneBy({ email })
 
+        if (!user) {
+            return response.status(401).send({ message: "User is not found" })
+        }
+
         const userPassword = user.password
 
-        if (password !== userPassword) {
+        const isPasswordCorrect = checkPassword(userPassword, password)
+
+        if (!isPasswordCorrect) {
             return response.status(401).send({ message: "Password or login is incorrect" })
         }
 
@@ -43,39 +52,25 @@ class AuthController {
     }
 
     verify = async (request: any, response: any) => {
-        const { body } = request
-        const { accessToken } = body
+        const { user } = request
 
         let isValid = false
 
-        try {
-            jwt.verify(accessToken, settings.JWT_SECRET_KEY)
+        if (user) {
             isValid = true
-        } catch (e) {
-            return response.status(401).send({ message: "Invalid signature" })
         }
 
         return response.send({ isValid })
+
     }
 
-    me = async (request: any, response: any) => {
-        const { headers } = request
-        const { authorization } = headers
+    me = async (request: any, response: any) => {    
+        const { user } = request
 
-        try {
-            const [, accessToken] = authorization.split(' ')
+        const userRepository = dataSource.getRepository(User)
+        const currentUser = await userRepository.findOneBy({ id: user.id })
 
-            const { user } = jwt.verify(accessToken, settings.JWT_SECRET_KEY)
-
-            const userRepository = dataSource.getRepository(User)
-            const currentUser = await userRepository.findOneBy({ id: user.id })
-
-            return response.send(currentUser)
-
-        } catch (e) {
-            return response.status(400).send({ message: "Error" })
-
-        }
+        return response.send(currentUser)
     }
 }
 
