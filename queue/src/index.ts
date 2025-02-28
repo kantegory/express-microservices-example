@@ -13,7 +13,7 @@ class App {
     private app: express.Application
     private server: Server
 
-    constructor(port = 8000, host = "localhost") {
+    constructor(port = 8001, host = "localhost") {
         this.port = port
         this.host = host
     
@@ -26,7 +26,7 @@ class App {
         app.use(cors())
         app.use(express.json())
         // включите роуты, когда они будут готовы
-        // app.use('/api', routes)
+        app.use('/api', routes)
     
         return app
       }

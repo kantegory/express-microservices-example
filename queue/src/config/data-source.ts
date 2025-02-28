@@ -7,8 +7,8 @@ const dataSource = new DataSource({
     port: 15432,
     username: "maindb",
     password: "maindb",
-    database: "maindb",
-    entities: ["src/models/*.js"],
+    database: "queuedb",
+    entities: ["src/models/*.ts"],
     logging: true,
     synchronize: true,
 });
