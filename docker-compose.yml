@@ -8,3 +8,17 @@ services:
       - ./dbs/postgres-data:/var/lib/postgresql/data
     env_file:
       - db.env
+  
+  auth:
+    image: express-auth-backend
+    build:
+      context: ./auth
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - /var/www/apps/auth/node_modules
+    env_file:
+      - ./auth/.env.prod
+    depends_on:
+      - db

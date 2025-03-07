@@ -12,16 +12,11 @@ import checkPassword from '../utils/checkPassword';
 
 // Контроллер
 class AuthController {
-    // TODO: дописать сервис
-    // private authService: AuthService
-
-    // constructor(authService: AuthService = AuthService) {
-    //     this.authService = authService
-    // }
+    private userRepository = dataSource.getRepository(User)
 
     register = async (request: any, response: any) => {
-        const user = await dataSource.getRepository(User).create(request.body)
-        const results = await dataSource.getRepository(User).save(user)
+        const user = this.userRepository.create(request.body)
+        const results = await this.userRepository.save(user)
 
         return response.send(results)
     }
