@@ -1,0 +1,32 @@
+build-manual:
+    stage: build
+    script:
+        - rsync -av --progress ./ /var/www/apps/express-microservices-example/
+        - docker compose -f /var/www/apps/express-microservices-example/docker-compose.yml build
+    when: manual
+    only:
+        - main
+
+start-manual:
+    stage: deploy
+    script:
+        - docker compose -f /var/www/apps/express-microservices-example/docker-compose.yml up -d
+    when: manual
+    only:
+        - main
+
+restart-manual:
+    stage: deploy
+    script:
+        - docker compose -f /var/www/apps/express-microservices-example/docker-compose.yml restart
+    when: manual
+    only:
+        - main
+
+deployment:    
+    stage: deploy
+    script:
+        - rsync -av --progress ./ /var/www/apps/express-microservices-example/
+        - docker compose -f /var/www/apps/express-microservices-example/docker-compose.yml up --build -d --force-recreate
+    only:
+        - main
